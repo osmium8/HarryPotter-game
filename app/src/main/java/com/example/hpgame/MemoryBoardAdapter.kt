@@ -9,12 +9,18 @@ import android.widget.ImageButton
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hpgame.models.BoardSize
+import com.example.hpgame.models.MemoryCard
 import java.lang.Integer.min
 
 class MemoryBoardAdapter(private val context: Context,
                          private val boardSize: BoardSize,
-                         private val cardImages: List<Int>) :
+                         private val cards: List<MemoryCard>,
+                         private val cardClickListener: CardClickListener) :
     RecyclerView.Adapter<MemoryBoardAdapter.ViewHolder>() {
+
+    interface CardClickListener {
+        fun onCardClicked(position: Int)
+    }
 
     companion object {
         private const val TAG = "MemoryBoardAdapter"
@@ -24,9 +30,11 @@ class MemoryBoardAdapter(private val context: Context,
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageButton = itemView.findViewById<ImageButton>(R.id.imageButton)
         fun bind(position: Int) {
-            imageButton.setImageResource(cardImages[position])
+            val memoryCard = cards[position]
+            imageButton.setImageResource(if(memoryCard.isFaceUp) memoryCard.identifier else R.drawable.hogwarts)
             imageButton.setOnClickListener {
                 Log.i(TAG, "Clicked on position $position")
+                cardClickListener.onCardClicked(position)
             }
         }
     }
